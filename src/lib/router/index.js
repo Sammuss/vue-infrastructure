@@ -19,7 +19,7 @@ const configs = import.meta.glob('/src/views/**/.page', {
 const layouts = new Map(Object
     .entries(import.meta.glob(['/src/layout/**/*.vue']))
     .map(([ path, component ]) => {
-        return [path.replace(/(\.\/layout\/|\.vue)/ig, ''), component]
+        return [path.replace(/(\/src\/layout\/|\.vue)/ig, ''), component]
     }))
 
 const configFormat = (config) => {
