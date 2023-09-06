@@ -1,0 +1,44 @@
+{
+  "name": "demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint --fix --ext .js,.vue src/",
+    "lint-staged": "lint-staged",
+    "prepare": "husky install",
+    "prettier": "prettier --write ."
+  },
+  "lint-staged": {
+    "*.{js,jsx,vue}": [
+      "eslint -c ./.eslintrc.cjs --fix"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint-staged"
+    }
+  },
+  "dependencies": {
+    "alova": "^2.11.1",
+    "axios": "^1.5.0",
+    "qs": "^6.11.2",
+    "vue": "^3.3.4",
+    "vue-i18n": "^9.2.2",
+    "vue-router": "^4.2.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.3.3",
+    "eslint": "^8.48.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "mockjs": "^1.1.0",
+    "prettier": "^3.0.2",
+    "vite": "^4.4.9",
+    "vite-plugin-mock": "2.9"
+  }
+}
