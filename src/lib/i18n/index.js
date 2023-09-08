@@ -1,4 +1,5 @@
 import { createI18n } from 'vue-i18n'
+import _get from 'lodash.get'
 
 const messages = {}
 // 引入同级目录下 设置全局变量 lang-*.js | lang-*/index.js
@@ -29,14 +30,14 @@ const i18n = createI18n({
 })
 
 // 监听页面语言变化
-const setLangObserver = () => {
+const setLangObserver = ($i18n) => {
     const targetNode = document.querySelector('html')
     const config = { attributes: true }
-    const callback = function(mutationsList) {
+    const callback = (mutationsList) => {
         if (mutationsList.length === 0) return
         if (mutationsList[0].attributeName !== 'lang') return
         if (!mutationsList[0].target.lang) return
-        i18n.global.locale.value = mutationsList[0].target.lang
+        $i18n.locale = mutationsList[0].target.lang
     }
 
     const observer = new MutationObserver(callback)
@@ -48,19 +49,34 @@ const setLangObserver = () => {
 export default {
     install: (app, ...options) => {
         i18n.install(app, ...options)
-        const { $t, $i18n } = app.config.globalProperties
+        const { $i18n } = app.config.globalProperties
+        const i18nProxy = new Proxy($i18n, {
+            set: function (obj, prop, value) {
+                if (prop === 'locale') {
+                    const { $t, $mitt, $route } = app.config.globalProperties
+                    $mitt && $mitt.emit('lang-change')
+                    if ($route && $route.meta && $t) {
+                        document.title = $route.meta.title || $t('project.name', value)
+                    }
+                }
+                obj[prop] = value
+                return true
+            }
+        })
+        app.config.globalProperties.$i18n = i18nProxy
         const vTDirective = app.directive('t')
         const getDirpath = app => app?.config?.globalProperties?.$route?.meta?.dirpath
-        const canIuseLocal = app => Boolean(getDirpath(app) && messages[$i18n.locale] && messages[$i18n.locale][getDirpath(app)])
+        const canIuseLocal = (app, locale) => Boolean(getDirpath(app) && messages[locale || $i18n.locale] && messages[locale || $i18n.locale][getDirpath(app)])
         const isLocale = str => $i18n.availableLocales.includes(str)
+        const getLocale = (locale) => isLocale(locale) ? locale : $i18n.locale
         const formatMsg = (app, msg, locale) => {
-            const canUseLocalVariable = canIuseLocal(app)
+            const canUseLocalVariable = canIuseLocal(app, locale)
             if (!canUseLocalVariable) return msg
             const dirpath = getDirpath(app)
-            let node = messages[locale && isLocale(locale) ? locale : $i18n.locale][getDirpath(app)]
+            let node = messages[locale && isLocale(locale) ? locale : $i18n.locale][dirpath]
             msg.split('.')
                 .forEach(key => {
-                    if (typeof node !== 'object') return node = undefined
+                    if (Object.prototype.toString.call(node) !== '[object Object]') return node = undefined
                     if (key in node) node = node[key]
                     else return node = undefined
                 })
@@ -73,11 +89,9 @@ export default {
             binding.value.path = formatMsg(app, binding.value.path, binding.value.locale)
         }
 
-        app.provide('$i18n', $i18n)
+        app.provide('$i18n', i18nProxy)
 
-        app.config.globalProperties.$t = (msg, ...args) => {
-            return $t(formatMsg(app, msg, ...args), ...args)
-        }
+        app.config.globalProperties.$t = (msg, ...args) => _get(messages, `${getLocale(...args)}.${formatMsg(app, msg, ...args)}`)
 
         app.directive('t', {
             ...vTDirective,
@@ -94,6 +108,6 @@ export default {
             }
         })
 
-        setLangObserver()
+        setLangObserver(i18nProxy)
     }
 }

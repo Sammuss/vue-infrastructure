@@ -140,30 +140,35 @@ const router = createRouter({
     routes: [ ...autoMatchRouters, ...routes ]
 })
 
-router.beforeEach((to) => {
-    const { meta } = to
-    document.title = meta.title || import.meta.env.VITE_PROJECT_NAME
+export default {
+    ...router,
+    install: (app, ...options) => {
+        router.beforeEach((to) => {
+            const { meta } = to
+            document.title = meta.title || app.config.globalProperties.$t('project.name')
+        
+            // 404 错误
+            if (to.matched.length === 0) {
+                return { name: 'error-404' }
+            }
+        
+          
+            const needAuth = meta.requiresAuth === 'true' ? true : false
+        
+            // 无需身份验证
+            if (!needAuth) {
+                return true
+            }
+        
+            const isAuthenticated = false
+        
+            // 未登录
+            if (!isAuthenticated && to.path !== '/') {
+            // 将用户重定向到登录页面
+                return { path: '/login' }
+            }
+        })
 
-    // 404 错误
-    if (to.matched.length === 0) {
-        return { name: 'error-404' }
-    }
-
-  
-    const needAuth = meta.requiresAuth === 'true' ? true : false
-
-    // 无需身份验证
-    if (!needAuth) {
-        return true
-    }
-
-    const isAuthenticated = false
-
-    // 未登录
-    if (!isAuthenticated && to.path !== '/') {
-    // 将用户重定向到登录页面
-        return { path: '/login' }
-    }
-})
-
-export default router
+        router.install(app, ...options)
+    } 
+}
