@@ -24,7 +24,7 @@ Object.entries(import.meta.glob(['/src/views/**/lang.js'], { eager: true, import
 
 const i18n = createI18n({
     legacy: false,
-    locale: document.querySelector('html').lang || 'zh',
+    locale: document.querySelector('html').lang in messages ? document.querySelector('html').lang : 'zh',
     fallbackLocale: 'zh',
     messages: messages
 })

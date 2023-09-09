@@ -11,7 +11,7 @@ import mitt from './lib/mitt'
 const app = createApp(App)
 
 app.config.globalProperties.$api = api
-
+console.log('api list', api)
 app.use(storage)
 app.use(mitt)
 app.use(i18n)

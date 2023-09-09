@@ -1,3 +1,4 @@
 export default {
-    LOGIN: '/auth/login'
+    USER_LIST: '/user/list',
+    USER_LOGIN: '/user/login'
 }

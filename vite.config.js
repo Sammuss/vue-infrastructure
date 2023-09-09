@@ -68,13 +68,14 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
     if (mockEnable) {
         config.plugins.push(
             viteMockServe({
+                ignore: /(data)\.js/,
                 mockPath: './src/lib/mock/',
                 watchFiles: true,
                 enable: mockEnable,
                 logger: true
             }))
         config.server.proxy['^/mock'] = {
-            target: `http://localhost:${config.server.port || 5173}/`, 
+            target: `http://localhost:${config.server.port || 5173}/`,
             changeOrigin: true,
             secure: false,
             rewrite: (path) => path.replace(/^\/mock/, '')

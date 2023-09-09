@@ -19,7 +19,7 @@ const onSuccess = (response, method) => {
     const executableType = ['arrayBuffer', 'blob', 'formData', 'json', 'text']
     const acceptType = method?.config?.headers?.Accept
     const resType = response.headers.has('Content-Type') ? response.headers.get('Content-Type') : ''
-    
+
     // 指定接受类型
     if (executableType.includes(acceptType)) return response[acceptType]()
     if (!acceptType && resType.indexOf('json') !== -1) return response.json()
@@ -35,7 +35,10 @@ export const instance = createAlova({
     statesHook: VueHook,
     requestAdapter: GlobalFetch(),
     beforeRequest,
-    responded
+    responded,
+    localCache: {
+        GET: 1000 * 10
+    }
 })
 
 export default {
@@ -47,7 +50,7 @@ export default {
             const { $api } = app.config.globalProperties
             let url = $api && $api[action] ? $api[action] : action
             const useQs = config?.useQs
-        
+
             if (['Get', 'Head', 'Options'].includes(method)) {
                 if (useQs) {
                     url += JSON.stringify(params) !== '{}' ? `?${qs.stringify(params, config.qsConfig || {})}` : ''
@@ -57,7 +60,7 @@ export default {
                 }
                 return instance[method](url, config)
             }
-        
+
             if (['Post', 'Put', 'Delete', 'Patch'].includes(method)) {
                 if (useQs) {
                     params = qs.stringify(params, config.qsConfig || {})
@@ -66,7 +69,7 @@ export default {
                 return instance[method](url, params, config)
             }
         }
-        
+
         // 获取alova实例
         app.provide('$alova', instance)
 
