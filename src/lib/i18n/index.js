@@ -22,10 +22,20 @@ Object.entries(import.meta.glob(['/src/views/**/lang.js'], { eager: true, import
             })
     })
 
+
+// 引入各语言的elment UI配置
+Object.entries(import.meta.glob(['/node_modules/element-plus/dist/locale/*.mjs', '!/node_modules/element-plus/dist/locale/*.min.mjs'], { eager: true, import: 'default' }))
+    .forEach(([fileName, component]) => {
+        const lang = fileName.match(/[a-z]{1,}(-[a-z]+?)?\.mjs$/g).toString().replace('.mjs', '')
+        if (Object.keys(messages).includes(lang)) {
+            messages[lang] = Object.assign({}, component, messages[lang])
+        }
+    })
+
 const i18n = createI18n({
     legacy: false,
-    locale: document.querySelector('html').lang in messages ? document.querySelector('html').lang : 'zh',
-    fallbackLocale: 'zh',
+    locale: document.querySelector('html').lang in messages ? document.querySelector('html').lang : 'zh-cn',
+    fallbackLocale: 'zh-cn',
     messages: messages
 })
 
@@ -63,7 +73,7 @@ export default {
                 return true
             }
         })
-        app.config.globalProperties.$i18n = i18nProxy
+        
         const vTDirective = app.directive('t')
         const getDirpath = app => app?.config?.globalProperties?.$route?.meta?.dirpath
         const canIuseLocal = (app, locale) => Boolean(getDirpath(app) && messages[locale || $i18n.locale] && messages[locale || $i18n.locale][getDirpath(app)])
@@ -90,9 +100,11 @@ export default {
         }
 
         app.provide('$i18n', i18nProxy)
+        app.provide('$t4el', () => _get(messages, i18nProxy.locale))
 
+        app.config.globalProperties.$i18n = i18nProxy
         app.config.globalProperties.$t = (msg, ...args) => _get(messages, `${getLocale(...args)}.${formatMsg(app, msg, ...args)}`)
-
+        
         app.directive('t', {
             ...vTDirective,
             // 在绑定元素的 attribute 前
@@ -107,7 +119,8 @@ export default {
                 vTDirective.beforeUpdate(el, binding, vnode, prevVnode)
             }
         })
-
+        
         setLangObserver(i18nProxy)
+        
     }
 }

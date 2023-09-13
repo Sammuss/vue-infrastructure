@@ -1,12 +1,11 @@
 <script setup>
-// import { inject } from 'vue'
-// const $send = inject('$send')
-// const login = async () => {
-//     const res = await $send('POST_LOGIN', { username: 'yu.h.sun', password: '1234.com' }, { useQs: true, headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
-//     console.log(res)
-// }
+import { inject, computed } from 'vue'
+const $t4el = inject('$t4el')
+const locale = computed(() => ($t4el()))
 </script>
 
 <template>
-    <router-view></router-view>
+    <el-config-provider :locale="locale">
+        <router-view></router-view>
+    </el-config-provider>
 </template>

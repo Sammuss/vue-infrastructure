@@ -96,14 +96,13 @@ function remove (isSupportStorage) {
     return key => document.cookie = `${base64encode(key)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT`
 }
 
-const storage = {
+export const storage = {
     get: get(isSupportStorage),
     set: set(isSupportStorage),
     remove: remove(isSupportStorage)
 }
 
 export default {
-    ...storage,
     install: app => {
         app.provide('$storage', storage)
     }

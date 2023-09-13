@@ -44,8 +44,10 @@ export default [
                     data: { token }
                 }))
             } catch (e) {
-                res.statusCode = 400
-                res.end(e)
+                res.end(JSON.stringify({
+                    code: 400,
+                    data: null
+                }))
             }
         }
     },

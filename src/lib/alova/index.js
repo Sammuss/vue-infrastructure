@@ -3,6 +3,7 @@ import GlobalFetch from 'alova/GlobalFetch'
 import VueHook from 'alova/vue'
 import { useRequest } from 'alova'
 import qs from 'qs'
+import api from '@/constant/api'
 
 /**
  * 请求拦截器
@@ -41,45 +42,46 @@ export const instance = createAlova({
     }
 })
 
+export const $method = (action, params = {}, config = {}) => {
+    let method = action.split('_', 1).toString()
+    action = action.replace(`${method}_`, '')
+    method = method.toLowerCase().replace(/^[a-z]/g, (L) => L.toUpperCase())
+    let url = api[action] ? api[action] : action
+    const useQs = config?.useQs
+
+    if (['Get', 'Head', 'Options'].includes(method)) {
+        if (useQs) {
+            url += JSON.stringify(params) !== '{}' ? `?${qs.stringify(params, config.qsConfig || {})}` : ''
+            config.qsConfig && delete config.qsConfig
+        } else {
+            config.params = params
+        }
+        return instance[method](url, config)
+    }
+
+    if (['Post', 'Put', 'Delete', 'Patch'].includes(method)) {
+        if (useQs) {
+            params = qs.stringify(params, config.qsConfig || {})
+            config.qsConfig && delete config.qsConfig
+        }
+        return instance[method](url, params, config)
+    }
+}
+
+export const $send = (action, params = {}, config = {}) => {
+    const { send } = useRequest($method(action, params, config))
+    return send()
+}
+
 export default {
     install: (app) => {
-        const $_method = (action, params = {}, config = {}) => {
-            let method = action.split('_', 1).toString()
-            action = action.replace(`${method}_`, '')
-            method = method.toLowerCase().replace(/^[a-z]/g, (L) => L.toUpperCase())
-            const { $api } = app.config.globalProperties
-            let url = $api && $api[action] ? $api[action] : action
-            const useQs = config?.useQs
-
-            if (['Get', 'Head', 'Options'].includes(method)) {
-                if (useQs) {
-                    url += JSON.stringify(params) !== '{}' ? `?${qs.stringify(params, config.qsConfig || {})}` : ''
-                    config.qsConfig && delete config.qsConfig
-                } else {
-                    config.params = params
-                }
-                return instance[method](url, config)
-            }
-
-            if (['Post', 'Put', 'Delete', 'Patch'].includes(method)) {
-                if (useQs) {
-                    params = qs.stringify(params, config.qsConfig || {})
-                    config.qsConfig && delete config.qsConfig
-                }
-                return instance[method](url, params, config)
-            }
-        }
-
         // 获取alova实例
         app.provide('$alova', instance)
 
         // 获取方法实例
-        app.provide('$method', $_method)
+        app.provide('$method', $method)
 
         // 直接发起请求
-        app.provide('$send', (action, params = {}, config = {}) => {
-            const { send } = useRequest($_method(action, params, config))
-            return send()
-        })
+        app.provide('$send', $send)
     }
 }
