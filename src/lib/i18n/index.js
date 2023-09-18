@@ -119,8 +119,7 @@ export default {
                 vTDirective.beforeUpdate(el, binding, vnode, prevVnode)
             }
         })
-        
+
         setLangObserver(i18nProxy)
-        
     }
 }

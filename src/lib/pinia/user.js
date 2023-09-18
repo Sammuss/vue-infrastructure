@@ -7,7 +7,7 @@ export const useUserStore = defineStore('user', {
         user: null
     }),
     getters: {
-        double: (state) => state.count * 2
+        isLogin: (state) => !!state.token
     },
     actions: {
         async login (payload) {

@@ -60,7 +60,7 @@ const supplementPaths = () => {
 // 其余为 meta 路由元信息
 // meta 包含
 //    title 页面标题 默认为系统名称
-//    requiresAuth 是否需要登录 默认不用
+//    requiresAuth 是否需要登录 默认需要
 //    path 默认目录路径
 //    name 默认目录路径，以-分层
 const getMatchRoutes = () => {
@@ -135,6 +135,7 @@ const exceptionalPage = []
 // 自动匹配路由
 const autoMatchRouters = getMatchRoutes().filter(({ path }) => exceptionalPage.findIndex(page => path.indexOf(page) === 1) === -1)
 
+console.log([ ...autoMatchRouters, ...routes ])
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [ ...autoMatchRouters, ...routes ]
@@ -145,28 +146,27 @@ export default {
     install: (app, ...options) => {
         router.beforeEach((to) => {
             const { meta } = to
+            const noAuthorizationRequired = [ /^\/login$/, /^\/error-([0-9]{1,})/ ]
             document.title = meta.title || app.config.globalProperties.$t('project.name')
         
             // 404 错误
-            if (to.matched.length === 0) {
-                return { name: 'error-404' }
-            }
-        
+            if (to.matched.length === 0) return { name: 'error-404' }
           
-            const needAuth = meta.requiresAuth === 'true' ? true : false
+            const needAuth = meta.requiresAuth === 'false' ? false : true
         
             // 无需身份验证
-            if (!needAuth) {
+            if (!needAuth || !noAuthorizationRequired.every(reg => !reg.test(to.path))) {
                 return true
             }
         
-            const isAuthenticated = false
+            const isAuthenticated = true
         
             // 未登录
-            if (!isAuthenticated && to.path !== '/') {
-            // 将用户重定向到登录页面
-                return { path: '/login' }
-            }
+            if (!isAuthenticated) return { path: '/login' }
+
+            if (to.path === '/') return { name: 'home' }
+
+            return true
         })
 
         router.install(app, ...options)
