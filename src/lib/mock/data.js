@@ -2,15 +2,15 @@
 import Mock from 'mockjs'
 
 const template = {
-    'users|100-300': [
-        {
-            name: '@cname',
-            age: '@integer(1, 80)',
-            isAdmin: '@boolean',
-            email: '@email',
-            address: '@county(true)'
-        }
-    ]
+  'users|100-300': [
+    {
+      name: '@cname',
+      age: '@integer(1, 80)',
+      isAdmin: '@boolean',
+      email: '@email',
+      address: '@county(true)'
+    }
+  ]
 }
 
 export default Mock.mock(template)

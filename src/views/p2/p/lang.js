@@ -1,7 +1,7 @@
 export default {
-    zh: {
-        message: {
-            hello: '你好页面变量'
-        }
+  zh: {
+    message: {
+      hello: '你好页面变量'
     }
+  }
 }

@@ -1,3 +1,1 @@
-<template>
-  p1/p
-</template>
+<template>p1/p</template>

@@ -28,7 +28,7 @@ p {
 .container::before {
   position: absolute;
   display: flex;
-  content: "";
+  content: '';
   top: -50%;
   left: -50%;
   background: radial-gradient(circle at 100% 100%, #bfbcbc 6%, #71716b 65%, #766c6c);

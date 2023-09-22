@@ -1,8 +1,8 @@
 export default {
-    project: {
-        name: 'デモ'
-    },
-    message: {
-        hello: 'こんにちは、世界'
-    }
+  project: {
+    name: 'デモ'
+  },
+  message: {
+    hello: 'こんにちは、世界'
+  }
 }
