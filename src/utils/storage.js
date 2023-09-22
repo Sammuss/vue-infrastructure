@@ -1,12 +1,11 @@
 const isSupportStorage = !!window.localStorage
-const ascii = 'ibm866'
 
-export function textEncode(s, asc = ascii) {
-  return new TextEncoder(asc).encode(s)
+export function textEncode(s) {
+  return new TextEncoder().encode(s)
 }
 
-export function textDecode(s, asc = ascii) {
-  return new TextDecoder(asc).decode(new Uint8Array(s.split(',').map((n) => n - 0)))
+export function textDecode(s) {
+  return new TextDecoder().decode(new Uint8Array(s.split(',').map((n) => n - 0)))
 }
 
 export function base64encode(s) {

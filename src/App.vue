@@ -1,7 +1,7 @@
 <script setup>
 import { inject, computed } from 'vue'
-const $t4el = inject('$t4el')
-const locale = computed(() => $t4el())
+const _getElLocale = inject('_getElLocale')
+const locale = computed(() => _getElLocale())
 </script>
 
 <template>

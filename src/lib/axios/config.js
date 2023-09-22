@@ -13,10 +13,6 @@ const config = {
   // `withCredentials` 表示跨域请求时是否需要使用凭证
   withCredentials: false,
 
-  // `auth` 表示应该使用 HTTP 基础验证，并提供凭据
-  // 这将设置一个 `Authorization` 头，覆写掉现有的任意使用 `headers` 设置的自定义 `Authorization`头
-  auth: {},
-
   // `responseType` 表示服务器响应的数据类型，可以是 'arrayBuffer', 'blob', 'document', 'json', 'text', 'stream'
   responseType: 'json', // 默认的
 

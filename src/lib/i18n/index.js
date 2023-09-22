@@ -105,8 +105,10 @@ export default {
       binding.value.path = formatMsg(app, binding.value.path, binding.value.locale)
     }
 
+    // i18n实例
     app.provide('$i18n', i18nProxy)
-    app.provide('$t4el', () => _get(messages, i18nProxy.locale))
+    // elment UI 的语言包
+    app.provide('_getElLocale', () => _get(messages, i18nProxy.locale))
 
     app.config.globalProperties.$i18n = i18nProxy
     app.config.globalProperties.$t = (msg, ...args) =>

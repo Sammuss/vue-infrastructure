@@ -1,5 +1,5 @@
 <script setup>
-import { inject, reactive, onMounted, computed } from 'vue'
+import { inject, reactive, onMounted, ref } from 'vue'
 import { useUserStore } from '@/lib/pinia/user'
 import { ElMessage } from 'element-plus'
 onMounted(() => {})
@@ -8,9 +8,8 @@ const form = reactive({
   password: '123456'
 })
 const $http = inject('$http')
-const $t4el = inject('$t4el')
 const user = useUserStore()
-const { login } = user
+const { login, logout } = user
 const switchLang = () => {
   document.querySelector('html').lang = 'ja'
 }
@@ -20,11 +19,16 @@ const requestLogin = async () => {
   await login(form)
 }
 
-const getUserList = async () => {
-  $http('GET_USER_LIST', { page: 1, size: 100 })
+const requestLogout = async () => {
+  logout()
 }
-const locale = computed(() => $t4el())
-getUserList()
+
+const getUserList = async () => {
+  const { code, data } = await $http('GET_USER_LIST', { page: 1, size: 100 })
+  if (code !== 200) return
+  total.value = data.total
+}
+const total = ref(0)
 </script>
 <template>
   <div>
@@ -36,7 +40,7 @@ getUserList()
     <el-form
       :model="form"
       label-width="120px"
-      style="width: 300px"
+      style="width: 600px"
     >
       <el-form-item label="username">
         <el-input v-model="form.username" />
@@ -46,6 +50,8 @@ getUserList()
       </el-form-item>
       <el-form-item>
         <el-button @click="requestLogin">登录</el-button>
+        <el-button @click="requestLogout">登出</el-button>
+        <el-button @click="getUserList">请求用户列表</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -54,6 +60,6 @@ getUserList()
       mb-1
       :data="[]"
     />
-    <el-pagination :total="100" />
+    <el-pagination :total="total" />
   </div>
 </template>

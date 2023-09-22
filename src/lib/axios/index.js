@@ -2,6 +2,7 @@ import qs from 'qs'
 import Axios from 'axios'
 import config from './config'
 import api from '@/constant/api'
+import { storage } from '@/utils/storage'
 
 export const $axios = Axios.create(config)
 
@@ -10,6 +11,11 @@ export const $axios = Axios.create(config)
  * 请求前的统一逻辑处理
  */
 $axios.interceptors.request.use(function (config) {
+  const token = storage.get('token')
+  if (token) {
+    config.headers.test = token
+    config.headers['Authorization'] = `Bearer ${token}`
+  }
   return config
 }, requestErrorHandler)
 
@@ -19,6 +25,10 @@ $axios.interceptors.request.use(function (config) {
  */
 $axios.interceptors.response.use(function (response) {
   import.meta.env.DEV && console.log(response.config.url + '\n', response)
+
+  if (response.headers['content-type'].includes('json')) {
+    return response.data
+  }
   return response
 }, responseErrorHandler)
 

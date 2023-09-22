@@ -4,6 +4,7 @@ import Mock from 'mockjs'
 const template = {
   'users|100-300': [
     {
+      id: '@id',
       name: '@cname',
       age: '@integer(1, 80)',
       isAdmin: '@boolean',

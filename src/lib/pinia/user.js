@@ -7,7 +7,7 @@ export const useUserStore = defineStore('user', {
     user: null
   }),
   getters: {
-    isLogin: (state) => !!state.token
+    isLogin: (state) => !!state.user.token
   },
   actions: {
     async login(payload) {
@@ -16,6 +16,13 @@ export const useUserStore = defineStore('user', {
       this.user = data
 
       data.token && storage.set('token', data.token)
+    },
+
+    async logout() {
+      const { code } = await $http('POST_USER_LOGOUT')
+      if (code !== 200) return
+      this.user = null
+      storage.remove('token')
     }
   }
 })
