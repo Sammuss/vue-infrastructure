@@ -2,11 +2,14 @@
 import { inject, reactive, onMounted, ref } from 'vue'
 import { useUserStore } from '@/lib/pinia/user'
 import { ElMessage } from 'element-plus'
+import tts from '@/lib/tts'
 onMounted(() => {})
 const form = reactive({
   username: 'admin',
   password: '123456'
 })
+const total = ref(0)
+const ttsText = ref('黑子说话')
 const $http = inject('$http')
 const user = useUserStore()
 const { login, logout } = user
@@ -28,7 +31,10 @@ const getUserList = async () => {
   if (code !== 200) return
   total.value = data.total
 }
-const total = ref(0)
+
+const playVoice = () => {
+  const buffer = tts(ttsText.value, { rate: 0.5 })
+}
 </script>
 <template>
   <div>
@@ -61,5 +67,12 @@ const total = ref(0)
       :data="[]"
     />
     <el-pagination :total="total" />
+  </div>
+  <div>
+    <el-input v-model="ttsText" />
+    <el-button @click="playVoice">转换语音</el-button>
+  </div>
+  <div>
+    <div id="qrcode"></div>
   </div>
 </template>

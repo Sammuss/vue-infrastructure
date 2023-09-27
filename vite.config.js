@@ -15,6 +15,13 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       rollupOptions: {
         input: {
           index: 'index.html'
+        },
+        output: {
+          manualChunks: {
+            l: ['vue', 'vue-router', 'pinia'],
+            u: ['vue-i18n', 'element-plus'],
+            h: ['axios', 'qs']
+          }
         }
       }
     },

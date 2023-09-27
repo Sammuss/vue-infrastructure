@@ -1,6 +1,7 @@
 <script setup>
 import { inject, computed } from 'vue'
 const _getElLocale = inject('_getElLocale')
+const $router = inject('$router')
 const locale = computed(() => _getElLocale())
 </script>
 
