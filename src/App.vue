@@ -7,6 +7,11 @@ const locale = computed(() => _getElLocale())
 
 <template>
   <el-config-provider :locale="locale">
-    <router-view></router-view>
+    <Transition
+      name="aa"
+      appear
+    >
+      <router-view></router-view>
+    </Transition>
   </el-config-provider>
 </template>

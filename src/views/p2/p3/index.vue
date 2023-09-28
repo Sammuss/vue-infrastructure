@@ -75,5 +75,4 @@ const playVoice = () => {
   <div>
     <div id="qrcode"></div>
   </div>
-  <RouterLink to="/p2/p3">to</RouterLink>
 </template>
