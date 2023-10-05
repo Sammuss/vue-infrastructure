@@ -1,33 +1,28 @@
 <template>
-  <Transition
-    name="fade"
-    mode="default"
-    appear
-    enter-active-class="animate__animated animate__fadeInUp"
-    leave-active-class="animate__animated animate__fadeOutDown"
-  >
+  <TransitionGroup name="fullPage">
     <div
       class="page-root"
       :key="$route.path"
     >
       <router-view></router-view>
     </div>
-  </Transition>
+  </TransitionGroup>
 </template>
-
 <style scoped>
 .page-root {
   width: 100%;
   height: 100%;
+  --animation-duration: 0.4s;
 }
 
 .fullPage-leave-active {
-  animation: slideOutLeft; /* referring directly to the animation's @keyframe declaration */
-  animation-duration: 1s; /* don't forget to set a duration! */
+  animation: fadeOutRight; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: var(--animation-duration); /* don't forget to set a duration! */
 }
 
 .fullPage-enter-active {
-  animation: slideInright; /* referring directly to the animation's @keyframe declaration */
-  animation-duration: 1s; /* don't forget to set a duration! */
+  animation: fadeInLeft; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: var(--animation-duration); /* don't forget to set a duration! */
+  animation-delay: var(--animation-duration);
 }
 </style>

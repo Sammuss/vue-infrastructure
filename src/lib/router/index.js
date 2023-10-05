@@ -135,7 +135,6 @@ const autoMatchRouters = getMatchRoutes().filter(
   ({ path }) => exceptionalPage.findIndex((page) => path.indexOf(page) === 1) === -1
 )
 
-console.log([...autoMatchRouters, ...routes])
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [...autoMatchRouters, ...routes]
