@@ -69,7 +69,7 @@ export default [
         res.end(
           JSON.stringify({
             code: 200,
-            data: { token }
+            data: { token, ...data.users[0] }
           })
         )
       } catch (e) {

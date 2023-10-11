@@ -100,8 +100,4 @@ export const storage = {
   remove: remove(isSupportStorage)
 }
 
-export default {
-  install: (app) => {
-    app.provide('$storage', storage)
-  }
-}
+export default storage

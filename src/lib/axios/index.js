@@ -3,6 +3,7 @@ import Axios from 'axios'
 import config from './config'
 import api from '@/constant/api'
 import { storage } from '@/utils/storage'
+import { requestErrorHandler, responseErrorHandler } from './errors'
 
 export const $axios = Axios.create(config)
 
@@ -26,27 +27,11 @@ $axios.interceptors.request.use(function (config) {
 $axios.interceptors.response.use(function (response) {
   import.meta.env.DEV && console.log(response.config.url + '\n', response)
 
-  if (response.headers['content-type'].includes('json')) {
-    return response.data
-  }
-  return response
+  if (!response.headers['content-type'].includes('json')) return response
+  const { code } = response.data
+  if (code !== 200) return responseErrorHandler(code)
+  return response.data
 }, responseErrorHandler)
-
-/**
- * 处理请求错误
- * @param {object} error
- */
-function requestErrorHandler(error) {
-  return Promise.reject(error)
-}
-
-/**
- * 处理响应错误
- * @param {object} error
- */
-function responseErrorHandler(error) {
-  return Promise.reject(error)
-}
 
 export const $http = (action, data = {}, config = {}) => {
   let method = action.split('_', 1).toString()

@@ -1,5 +1,8 @@
+// https://vue-i18n.intlify.dev/
 import { createI18n } from 'vue-i18n'
 import _get from 'lodash.get'
+import { _type } from '@/utils'
+import { emitter, EVENT_I18N_LOADED, EVENT_LOCALE_CHANGE } from '@/lib/mitt'
 
 const messages = {}
 // 引入同级目录下 设置全局变量 lang-*.js | lang-*/index.js
@@ -62,57 +65,67 @@ const setLangObserver = ($i18n) => {
   // observer.disconnect()
 }
 
+export let i18nProxy = null
+export let _i18n = null
+export let _t = null
+export let getMessages = null
+export const setPageLang = (lang) => (document.querySelector('html').lang = lang)
+export const setLocale = (lang) => (i18nProxy.locale = lang)
+
 export default {
   install: (app, ...options) => {
     i18n.install(app, ...options)
-    const { $i18n } = app.config.globalProperties
-    const i18nProxy = new Proxy($i18n, {
+    const { $i18n, $t } = app.config.globalProperties
+    const vTDirective = app.directive('t')
+    i18nProxy = new Proxy($i18n, {
       set: function (obj, prop, value) {
         if (prop === 'locale') {
-          const { $t, $mitt, $route } = app.config.globalProperties
-          $mitt && $mitt.emit('lang-change')
-          if ($route && $route.meta && $t) {
-            document.title = $route.meta.title || $t('project.name', value)
-          }
+          const { $route } = app.config.globalProperties
+          emitter.emit(EVENT_LOCALE_CHANGE)
+          document.title = $route?.meta?.title || getTitle(value)
         }
-        obj[prop] = value
-        return true
+        return Reflect.set(...arguments)
       }
     })
 
-    const vTDirective = app.directive('t')
+    getMessages = (msg, ...args) => _get(messages, `${getLocale(...args)}.${formatMsg({}, msg, ...args)}`)
+    const getTitle = (locale) => getMessages('project.name', locale)
     const getDirpath = (app) => app?.config?.globalProperties?.$route?.meta?.dirpath
     const canIuseLocal = (app, locale) =>
       Boolean(getDirpath(app) && messages[locale || $i18n.locale] && messages[locale || $i18n.locale][getDirpath(app)])
     const isLocale = (str) => $i18n.availableLocales.includes(str)
-    const getLocale = (locale) => (isLocale(locale) ? locale : $i18n.locale)
-    const formatMsg = (app, msg, locale) => {
+    const getLocale = (locale = '') => (isLocale(locale) ? locale : $i18n.locale)
+    const formatMsg = (app, msg, ...args) => {
+      const locale = getLocale(args.length > 0 && _type(args[0]) === 'string' ? args[0] : '')
       const canUseLocalVariable = canIuseLocal(app, locale)
       if (!canUseLocalVariable) return msg
       const dirpath = getDirpath(app)
       let node = messages[locale && isLocale(locale) ? locale : $i18n.locale][dirpath]
       msg.split('.').forEach((key) => {
-        if (Object.prototype.toString.call(node) !== '[object Object]') return (node = undefined)
+        if (_type(node) !== 'object') return (node = undefined)
         if (key in node) node = node[key]
         else return (node = undefined)
       })
       return node === undefined ? msg : `${dirpath}.${msg}`
     }
     const updateBindingValue = (app, binding) => {
-      if (typeof binding.value === 'string') {
+      if (_type(binding.value) === 'string') {
         binding.value = { path: binding.value }
       }
       binding.value.path = formatMsg(app, binding.value.path, binding.value.locale)
     }
+    _t = (msg, ...args) =>
+      $t(formatMsg(app, msg, ...args), ...args).replace(/\@\:{1}([A-Za-z]|\.|_){1,}/g, (s) => $t(s.replace('@:', '')))
 
     // i18n实例
     app.provide('$i18n', i18nProxy)
     // elment UI 的语言包
     app.provide('_getElLocale', () => _get(messages, i18nProxy.locale))
+    //
+    app.provide('$t', _t)
 
     app.config.globalProperties.$i18n = i18nProxy
-    app.config.globalProperties.$t = (msg, ...args) =>
-      _get(messages, `${getLocale(...args)}.${formatMsg(app, msg, ...args)}`)
+    app.config.globalProperties.$t = _t
 
     app.directive('t', {
       ...vTDirective,
@@ -130,5 +143,6 @@ export default {
     })
 
     setLangObserver(i18nProxy)
+    emitter.emit(EVENT_I18N_LOADED)
   }
 }
