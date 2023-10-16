@@ -18,7 +18,7 @@ const login = function (username, password) {
   tokenList.add(token)
   return token
 }
-const logout = (authorization) => tokenList.delete(authorization.replace('Bearer ', ''))
+const logout = (authorization) => authorization && tokenList.delete(authorization.replace('Bearer ', ''))
 const isValidityToken = (authorization) => {
   if (!authorization) return false
   const token = authorization.replace('Bearer ', '')
@@ -86,9 +86,8 @@ export default [
     method: 'post',
     url: '/user/logout',
     rawResponse: async (req, res) => {
-      if (!isValidityToken(req.headers.authorization)) {
-        return res.end(JSON.stringify({ code: 401, data: null }))
-      }
+      res.setHeader('Content-Type', 'application/json')
+      res.statusCode = 200
       logout(req.headers.authorization)
       res.end(JSON.stringify({ code: 200, data: null }))
     }
@@ -98,7 +97,7 @@ export default [
     url: '/user/list',
     response: ({ query, headers }) => {
       if (!isValidityToken(headers.authorization)) {
-        return { code: 401, data: null }
+        return { code: 10402, data: null }
       }
       const page = Number(query.page || 1)
       const size = Number(query.size || 20)

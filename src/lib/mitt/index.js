@@ -7,6 +7,7 @@ export const EVENT_LOCALE_CHANGE = Symbol('i18n-locale-change')
 
 export const EVENT_USER_LOGIN = Symbol('user-login')
 export const EVENT_USER_LOGOUT = Symbol('user-logout')
+export const EVENT_USER_INVALID = Symbol('user-invalid')
 
 export const emitter = mitt()
 export default emitter

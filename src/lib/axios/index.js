@@ -27,7 +27,7 @@ $axios.interceptors.request.use(function (config) {
 $axios.interceptors.response.use(function (response) {
   import.meta.env.DEV && console.log(response.config.url + '\n', response)
 
-  if (!response.headers['content-type'].includes('json')) return response
+  if (!response?.headers['content-type']?.includes('json')) return response
   const { code } = response.data
   if (code !== 200) return responseErrorHandler(code)
   return response.data

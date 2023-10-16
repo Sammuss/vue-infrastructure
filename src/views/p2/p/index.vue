@@ -2,6 +2,7 @@
 import { inject, reactive, onMounted, ref } from 'vue'
 import { useUserStore } from '@/lib/pinia/user'
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
 import tts from '@/lib/tts'
 onMounted(() => {})
 const form = reactive({
@@ -12,6 +13,7 @@ const total = ref(0)
 const ttsText = ref('黑子说话')
 const $http = inject('$http')
 const user = useUserStore()
+const router = useRouter()
 const { login, logout } = user
 const switchLang = () => {
   document.querySelector('html').lang = 'ja'
@@ -23,7 +25,10 @@ const requestLogin = async () => {
 }
 
 const requestLogout = async () => {
-  logout()
+  const res = await logout()
+  // if (res) {
+  //   router.push({ path: '/login' })
+  // }
 }
 
 const getUserList = async () => {

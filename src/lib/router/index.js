@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import qs from 'qs'
+import { useUserStore } from '../pinia/user'
+import { _type } from '@/utils/index'
 
 // 匹配页面规则
 // 指定页面：index、detail
@@ -54,6 +56,21 @@ const supplementPaths = () => {
   })
 }
 
+function routerFilter(routers, exceptionalPages) {
+  routers.forEach((router, index) => {
+    for (let i = 0; i < exceptionalPages.length; i++) {
+      const path = exceptionalPages[i].includes('/') ? router?.meta?.fullPath : router?.path
+      if (path === exceptionalPages[i]) {
+        routers.splice(index, 1)
+        break
+      }
+    }
+    if (_type(router.children) === 'array') {
+      routerFilter(router.children, exceptionalPages)
+    }
+  })
+}
+
 // .page 为页面配置信息
 // 目前主要是 components 组件 components=type1=component1;type2=component2
 // 其余为 meta 路由元信息
@@ -102,6 +119,9 @@ const getMatchRoutes = () => {
       const name = meta.name || path.replace(/^\//, '').replace('/', '-').replace(':', '')
       meta.fullPath = path
       meta.dirpath = dirpath
+      if (path.indexOf('/error/') === 0 && !(meta.requiresAuth in meta)) {
+        meta.requiresAuth = 'false'
+      }
       const router = {
         path,
         name: name || 'index',
@@ -130,42 +150,46 @@ supplementPaths()
 const routes = []
 // 不做自动匹配的目录
 const exceptionalPage = []
+
 // 自动匹配路由
-const autoMatchRouters = getMatchRoutes().filter(
-  ({ path }) => exceptionalPage.findIndex((page) => path.indexOf(page) === 1) === -1
-)
+const autoMatchRouters = getMatchRoutes()
+routerFilter(autoMatchRouters, exceptionalPage)
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [...autoMatchRouters, ...routes]
 })
 
+// 未登录时主页与登陆后主页
+const homePages = ['login', 'p2-p']
+
 export default {
   ...router,
   install: (app, ...options) => {
     router.beforeEach((to) => {
       const { meta } = to
+      const pageJump = () => {
+        const needAuth = meta.requiresAuth !== 'false' ? true : false
+        const userStore = useUserStore()
+
+        if (to.name === homePages[0] && userStore.isLogin) return { name: homePages[1] }
+        // 无需身份验证
+        if (!needAuth || !noAuthorizationRequired.every((reg) => !reg.test(to.path))) return true
+        if (!userStore.isLogin) return { name: homePages[0] }
+        if (to.path === '/') return { name: homePages[1] }
+
+        return true
+      }
       const noAuthorizationRequired = [/^\/login$/, /^\/error-([0-9]{1,})/]
       document.title = meta.title || app.config.globalProperties.$t('project.name')
 
       // 404 错误
-      if (to.matched.length === 0) return { name: 'error-404' }
-
-      const needAuth = meta.requiresAuth === 'false' ? false : true
-
-      // 无需身份验证
-      if (!needAuth || !noAuthorizationRequired.every((reg) => !reg.test(to.path))) {
-        return true
+      if (to.matched.length === 0) {
+        if (to.path === '/' && homePages.length !== 0) return pageJump()
+        return { name: 'error-404' }
       }
 
-      const isAuthenticated = true
-
-      // 未登录
-      if (!isAuthenticated) return { path: '/login' }
-
-      if (to.path === '/') return { name: 'home' }
-
-      return true
+      return pageJump()
     })
 
     router.install(app, ...options)

@@ -5,6 +5,8 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vue from '@vitejs/plugin-vue'
+import { visualizer } from 'rollup-plugin-visualizer'
+import viteCompression from 'vite-plugin-compression'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode, ssrBuild }) => {
@@ -22,7 +24,8 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
             u: ['vue-i18n', 'element-plus'],
             h: ['axios', 'qs']
           }
-        }
+        },
+        plugins: [visualizer()]
       }
     },
     resolve: {
@@ -37,7 +40,8 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
       }),
       Components({
         resolvers: [ElementPlusResolver()]
-      })
+      }),
+      viteCompression()
     ],
     define: {
       __VUE_I18N_FULL_INSTALL__: true,

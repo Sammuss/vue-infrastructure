@@ -1,6 +1,7 @@
 import { _t, getMessages } from '@/lib/i18n/index'
 import { _type } from '@/utils'
-import { emitter, EVENT_I18N_LOADED } from '@/lib/mitt'
+import { emitter, EVENT_I18N_LOADED, EVENT_USER_INVALID } from '@/lib/mitt'
+import { ElMessage } from 'element-plus'
 
 // 服务端定义的错误
 // 在i18n对应语言的 errors.serve 配置
@@ -22,12 +23,21 @@ export function requestErrorHandler(e) {
  * @param {object} error
  */
 export function responseErrorHandler(e) {
+  let err = { code: 500, data: 'request fail' }
   // server error
-  if (_type(e) === 'number') return { code: e, data: SERVER_ERROR_MAP.get(e) }
+  if (_type(e) === 'number' && SERVER_ERROR_MAP.has(e)) {
+    err = { code: e, data: SERVER_ERROR_MAP.get(e) }
+    if (e === 10402) emitter.emit(EVENT_USER_INVALID)
+  }
   // axios error
-  if (_type(e) === 'object' && e.name === 'AxiosError')
-    return { code: e.response.status, data: STATUS_CODE_MAP.get(e.response.status) }
-  return Promise.reject(e)
+  if (_type(e) === 'object' && e.name === 'AxiosError' && STATUS_CODE_MAP.has(e.response.status)) {
+    err = { code: e.response.status, data: STATUS_CODE_MAP.get(e.response.status) }
+  }
+  ElMessage({
+    message: err.data,
+    type: 'error'
+  })
+  return err
 }
 
 function init() {

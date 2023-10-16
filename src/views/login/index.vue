@@ -1,10 +1,13 @@
 <script setup>
 import { ref, reactive, computed, inject } from 'vue'
 import { useUserStore } from '@/lib/pinia/user'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const t = inject('$t')
 const formRef = ref()
+const loading = ref(false)
+const router = useRouter()
 const rules = computed(() => ({
   username: [{ required: true, message: t('errors.required', { field: '@:fields.username' }), trigger: 'blur' }],
   password: [{ required: true, message: t('errors.required', { field: '@:fields.password' }), trigger: 'blur' }]
@@ -17,8 +20,11 @@ const submit = async (el) => {
   if (!el) return
   await el.validate(async (valid) => {
     if (valid) {
+      loading.value = true
       const res = await userStore.login(form)
-      console.log(res)
+      loading.value = false
+      if (res.code !== 200) return
+      router.push({ path: '/' })
     }
   })
 }
@@ -28,9 +34,11 @@ const submit = async (el) => {
     <div class="login-wrap">
       <el-form
         ref="formRef"
+        v-loading="loading"
         :model="form"
         :rules="rules"
         class="login-form"
+        @keyup.enter="submit(formRef)"
       >
         <el-form-item prop="username">
           <el-input
