@@ -6,9 +6,13 @@
       "pathMode": "absolute"
     },
     {
-      "command": "npx",
-      "args": ["eslint", "--fix", "${staged}"],
-      "pathMode": "absolute"
+      "name": "eslint",
+      "group": "pre-commit",
+      "pathMode": "absolute",
+      "cwd": "Client",
+      "command": "npm",
+      "args": ["run", "lint", "${staged}"],
+      "include": ["**/*.ts", "**/*.vue", "**/*.js"]
     }
   ]
 }
