@@ -7,7 +7,7 @@
     "dev": "vite --host",
     "build": "vite build && node scripts/dns-prefetch.cjs",
     "preview": "vite preview",
-    "lint": "eslint --fix --ext .js,.vue src/",
+    "lint": "eslint --fix --ext .js,.vue src && eslint --fix ./vite.config.js",
     "lint-staged": "lint-staged",
     "prepare": "husky install",
     "prettier": "prettier --write .",
@@ -32,6 +32,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.3.3",
+    "eslint": "^8.51.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-vue": "^9.17.0",
     "git-format-staged": "^3.0.0",
     "glob": "^10.3.10",
     "husky": "^8.0.0",

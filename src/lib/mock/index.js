@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 // https://github.com/vbenjs/vite-plugin-mock/blob/main/README.zh_CN.md
 import data from './data'
 // import jwt from 'jwt-simple'

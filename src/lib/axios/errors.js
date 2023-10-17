@@ -1,7 +1,8 @@
-import { _t, getMessages } from '@/lib/i18n/index'
-import { _type } from '@/utils'
-import { emitter, EVENT_I18N_LOADED, EVENT_USER_INVALID } from '@/lib/mitt'
 import { ElMessage } from 'element-plus'
+
+import { getMessages } from '@/lib/i18n/index'
+import { emitter, EVENT_I18N_LOADED, EVENT_USER_INVALID } from '@/lib/mitt'
+import { _type } from '@/utils'
 
 // 服务端定义的错误
 // 在i18n对应语言的 errors.serve 配置

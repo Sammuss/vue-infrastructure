@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 const monkeyWrapper = ref()
 const switchStatus = () => monkeyWrapper.value.classList.toggle('show')
 const isShow = () => monkeyWrapper.value.classList.contains('show')

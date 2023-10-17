@@ -1,8 +1,10 @@
-import qs from 'qs'
 import Axios from 'axios'
-import config from './config'
+import qs from 'qs'
+
 import api from '@/constant/api'
 import { storage } from '@/utils/storage'
+
+import config from './config'
 import { requestErrorHandler, responseErrorHandler } from './errors'
 
 export const $axios = Axios.create(config)

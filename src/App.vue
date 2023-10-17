@@ -1,8 +1,10 @@
 <script setup>
-import { inject, computed } from 'vue'
-import { emitter, EVENT_USER_INVALID } from '@/lib/mitt'
-import { useUserStore } from './lib/pinia/user'
+import { computed, inject } from 'vue'
 import { useRouter } from 'vue-router'
+
+import { emitter, EVENT_USER_INVALID } from '@/lib/mitt'
+
+import { useUserStore } from './lib/pinia/user'
 const userStore = useUserStore()
 const router = useRouter()
 const _getElLocale = inject('_getElLocale')

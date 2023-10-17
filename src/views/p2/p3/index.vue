@@ -1,7 +1,8 @@
 <script setup>
-import { inject, reactive, onMounted, ref } from 'vue'
-import { useUserStore } from '@/lib/pinia/user'
 import { ElMessage } from 'element-plus'
+import { inject, onMounted, reactive, ref } from 'vue'
+
+import { useUserStore } from '@/lib/pinia/user'
 import tts from '@/lib/tts'
 onMounted(() => {})
 const form = reactive({
@@ -33,7 +34,7 @@ const getUserList = async () => {
 }
 
 const playVoice = () => {
-  const buffer = tts(ttsText.value, { rate: 0.5 })
+  tts(ttsText.value, { rate: 0.5 })
 }
 </script>
 <template>

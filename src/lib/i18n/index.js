@@ -1,8 +1,9 @@
 // https://vue-i18n.intlify.dev/
-import { createI18n } from 'vue-i18n'
 import _get from 'lodash.get'
-import { _type } from '@/utils'
+import { createI18n } from 'vue-i18n'
+
 import { emitter, EVENT_I18N_LOADED, EVENT_LOCALE_CHANGE } from '@/lib/mitt'
+import { _type } from '@/utils'
 
 const messages = {}
 // 引入同级目录下 设置全局变量 lang-*.js | lang-*/index.js
@@ -115,7 +116,7 @@ export default {
       binding.value.path = formatMsg(app, binding.value.path, binding.value.locale)
     }
     _t = (msg, ...args) =>
-      $t(formatMsg(app, msg, ...args), ...args).replace(/\@\:{1}([A-Za-z]|\.|_){1,}/g, (s) => $t(s.replace('@:', '')))
+      $t(formatMsg(app, msg, ...args), ...args).replace(/@:{1}([A-Za-z]|\.|_){1,}/g, (s) => $t(s.replace('@:', '')))
 
     // i18n实例
     app.provide('$i18n', i18nProxy)

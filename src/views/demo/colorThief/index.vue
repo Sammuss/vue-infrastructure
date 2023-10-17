@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onUnmounted } from 'vue'
 import ColorThief from 'colorthief'
+import { onUnmounted, ref } from 'vue'
 const images = new Array(4).fill(null).map((obj, i) => `https://picsum.photos/200?r=${i}`)
 const colorThief = new ColorThief()
 const currentIndex = ref(-1)

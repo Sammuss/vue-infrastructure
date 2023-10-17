@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted } from 'vue'
+
 import Trace from '@/utils/trace'
 
 onMounted(() => {

@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
+
 import { $http } from '@/lib/axios/index'
-import { storage } from '@/utils/storage'
 import { emitter, EVENT_USER_LOGIN, EVENT_USER_LOGOUT } from '@/lib/mitt'
+import { storage } from '@/utils/storage'
 
 function getRefreshToken() {
   return storage.get('token')

@@ -1,7 +1,9 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
 import qs from 'qs'
-import { useUserStore } from '../pinia/user'
+import { createRouter, createWebHashHistory } from 'vue-router'
+
 import { _type } from '@/utils/index'
+
+import { useUserStore } from '../pinia/user'
 
 // 匹配页面规则
 // 指定页面：index、detail

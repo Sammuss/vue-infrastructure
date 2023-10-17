@@ -1,7 +1,8 @@
 <script setup>
-import { ref, reactive, computed, inject } from 'vue'
-import { useUserStore } from '@/lib/pinia/user'
+import { computed, inject, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+import { useUserStore } from '@/lib/pinia/user'
 
 const userStore = useUserStore()
 const t = inject('$t')

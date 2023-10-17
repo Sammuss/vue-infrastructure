@@ -5,7 +5,6 @@ onMounted(() => {
   let x = c.getContext('2d')
   let S = Math.sin
   let C = Math.cos
-  let Rn = Math.random
   let t = 0
   let go = 0
   let rsz = (window.onresize = () => {
@@ -28,25 +27,6 @@ onMounted(() => {
     bg.src = 'https://srmcgann.github.io/drawings/rotated/05412d422b2714fbeab2593366338211_rotated.jpg'
     if (!t) {
       go = false
-      let R = (Rl, Pt, Yw, m) => {
-        let M = Math
-        let A = M.atan2
-        let H = M.hypot
-        let p1 = A(X, Y) + Rl
-        let d = H(X, Y)
-        let X = s(p1) * d
-        let Y = C(p1) * d
-        let p2 = A(Y, Z) + Pt
-        d = H(Y, Z)
-        Y = S(p2) * d
-        Z = C(p2) * d
-        let p3 = A(X, Z) + Yw
-        d = H(X, Z)
-        X = S(p3) * d
-        Z = C(p3) * d
-        if (m) (X += oX), (Y += oY), (Z += oZ)
-      }
-      let Q = () => [c.width / 2 + (X / Z) * 900, c.height / 2 + (Y / Z) * 900]
       for (let CB = [], j = 6; j--; )
         for (let i = 4; i--; ) {
           let p = ((Math.PI * 2) / 4) * i + Math.PI / 4
@@ -60,12 +40,6 @@ onMounted(() => {
     }
     x.lineJoin = 'round'
     x.lineCap = 'round'
-    let Rl = 0
-    let Pt = 0
-    let Yw = 0
-    let oX = 0
-    let oY = 0
-    let oZ = 10
 
     if (go) {
       let g = 'globalAlpha'

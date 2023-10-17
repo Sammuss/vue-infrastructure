@@ -1,12 +1,14 @@
-import { defineConfig, loadEnv } from 'vite'
-import path from 'path'
-import { viteMockServe } from 'vite-plugin-mock'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 import vue from '@vitejs/plugin-vue'
+import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
+import AutoImport from 'unplugin-auto-import/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+import { defineConfig, loadEnv } from 'vite'
 import viteCompression from 'vite-plugin-compression'
+import { viteMockServe } from 'vite-plugin-mock'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode, ssrBuild }) => {
