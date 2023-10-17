@@ -7,7 +7,7 @@
     },
     {
       "command": "npx",
-      "args": ["eslint", "--fix", "--ext", ".js,.vue", "src"],
+      "args": ["eslint", "--fix", "${staged}"],
       "pathMode": "absolute"
     }
   ]
