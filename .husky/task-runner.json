@@ -9,7 +9,7 @@
       "name": "eslint",
       "pathMode": "absolute",
       "command": "npm",
-      "args": ["run", "eslint", "${staged}"],
+      "args": ["run", "eslint", "--fix", "${staged}"],
       "include": ["**/*.ts", "**/*.vue", "**/*.js"]
     }
   ]
