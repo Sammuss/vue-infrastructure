@@ -7,11 +7,9 @@
     },
     {
       "name": "eslint",
-      "group": "pre-commit",
       "pathMode": "absolute",
-      "cwd": "Client",
       "command": "npm",
-      "args": ["run", "lint", "${staged}"],
+      "args": ["run", "eslint", "${staged}"],
       "include": ["**/*.ts", "**/*.vue", "**/*.js"]
     }
   ]
