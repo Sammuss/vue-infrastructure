@@ -4,6 +4,11 @@
       "command": "npx",
       "args": ["prettier", "--ignore-unknown", "--write", "${staged}"],
       "pathMode": "absolute"
+    },
+    {
+      "command": "npx",
+      "args": ["eslint", "--fix", "--ext", "${staged}"],
+      "pathMode": "absolute"
     }
   ]
 }
