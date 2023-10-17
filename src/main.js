@@ -2,10 +2,10 @@ import './assets/css/index.css'
 import 'animate.css'
 
 import { createPinia } from 'pinia'
-import App from './App.vue'
 import { createApp } from 'vue'
-import axios from './lib/axios'
 
+import App from './App.vue'
+import axios from './lib/axios'
 import elementPlus from './lib/element-plus'
 import i18n from './lib/i18n'
 import router from './lib/router'
