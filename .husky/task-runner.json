@@ -1,18 +1,6 @@
 {
   "tasks": [
     {
-      "name": "dotnet-format",
-      "group": "pre-commit",
-      "command": "dotnet",
-      "args": ["dotnet-format", "--include", "${staged}"],
-      "include": ["**/*.cs", "**/*.vb"]
-    },
-    {
-      "name": "commit-message-linter",
-      "command": "dotnet",
-      "args": ["husky", "exec", ".husky/csx/commit-lint.csx", "--args", "${args}"]
-    },
-    {
       "name": "eslint",
       "group": "pre-commit",
       "pathMode": "absolute",
@@ -23,21 +11,9 @@
     {
       "name": "prettier",
       "group": "pre-commit",
-      "pathMode": "absolute",
-      "cwd": "Client",
       "command": "npx",
-      "args": ["prettier", "--write", "${staged}"],
-      "include": ["**/*.ts", "**/*.vue", "**/*.js", "**/*.json", "**/*.yml", "**/*.css", "**/*.scss"]
-    },
-    {
-      "name": "Welcome",
-      "output": "always",
-      "command": "bash",
-      "args": ["-c", "echo Nice work! 🥂"],
-      "windows": {
-        "command": "cmd",
-        "args": ["/c", "echo Nice work! 🥂"]
-      }
+      "args": ["prettier", "--ignore-unknown", "--write", "${staged}"],
+      "pathMode": "absolute"
     }
   ]
 }
