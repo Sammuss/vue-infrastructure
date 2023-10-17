@@ -3,8 +3,8 @@ import 'animate.css'
 
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-
 import App from './App.vue'
+
 import axios from './lib/axios'
 import elementPlus from './lib/element-plus'
 import i18n from './lib/i18n'
